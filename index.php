@@ -51,6 +51,17 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(format_string($course->fullname));
 
+// List moderators
+echo $OUTPUT->heading('Moderators', 4);
+$users = get_role_users(62, context_course::instance($course->id), false, 'u.id, u.lastname, u.firstname', 'u.lastname, u.firstname');
+if(count($users) > 0){
+  foreach ($users as $key => $value) {
+    echo $value->firstname . " " . $value->lastname . "<br/><br/>";
+  }
+
+}else{
+  echo "No moderators are currently assigned to this unit.<br/><br/>";
+}
 // Set up static column headers
 $table = new html_table();
 $table->attributes['class'] = 'generaltable boxaligncenter';
@@ -112,7 +123,6 @@ if(count($assigns) > 0){
         foreach($vg->items as $ki => $vi){
         if($vi->iteminstance == $v->iteminstance){
           $userdoublemarks = get_doublemarks($doublemarks, $v->iteminstance, $vu->id);
-          $usersample = get_sample($sample, $v->iteminstance, $vu->id);
 
           if($conf_double->name == "enabled" && $conf_double->value == 1){
             if(!empty($userdoublemarks)){
@@ -131,7 +141,11 @@ if(count($assigns) > 0){
           }
           if($conf_sample->name == "enabled" && $conf_sample->value == 1){
             if(!empty($sample)){
-              $row->cells[] = new html_table_cell(get_sample($sample, $v->iteminstance, $vu->id));
+              $cm = get_coursemodule_from_instance('assign', $vi->iteminstance);
+              $link = '/mod/assign/view.php?id=' . $cm->id . '&rownum=0&action=grader&userid=' . $vu->id;
+              $linktext = get_sample($sample, $v->iteminstance, $vu->id);
+
+              $row->cells[] = new html_table_cell(html_writer::link($link, $linktext));
             }else{
               $row->cells[] = new html_table_cell();
             }
