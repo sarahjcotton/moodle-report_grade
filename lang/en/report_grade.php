@@ -23,16 +23,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['eventgradereportviewed'] = 'Grade report viewed';
+$string['externalexaminer'] = 'External Examiner';
+$string['externalexaminershortname'] = 'External Examiner role shortname';
 $string['eventgradereportviewed'] = 'Grade report viewed';
 $string['finalgrade'] = ' Final grade';
 $string['firstname'] = ' First name';
 $string['firstmark'] = ' First mark';
 $string['gradereport'] = 'Grade report';
 $string['idnumber'] = 'ID number';
+$string['moderator'] = 'Moderator';
+$string['moderatorshortname'] = 'Moderator role shortname';
 $string['neverseen'] = 'Never seen';
 $string['noassignments'] = 'Either there are no Quercus assignments in this unit or they haven\'t been set up yet.';
 $string['nologreaderenabled'] = 'No log reader enabled';
+$string['noexternalexaminer'] = 'No external examiners are currently assigned to this module';
+$string['nomoderator'] = 'No moderators are currently assigned to this module';
 $string['numviews'] = '{$a->numviews} by {$a->distinctusers} users';
 $string['grade:view'] = 'View grade report';
 $string['page-report-grade-x'] = 'Any grade report';

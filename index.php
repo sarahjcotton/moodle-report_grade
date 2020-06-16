@@ -26,14 +26,18 @@
 require('../../config.php');
 require_once($CFG->dirroot.'/report/grade/locallib.php');
 
-$id = required_param('id',PARAM_INT);       // course id
-$course = $DB->get_record('course', array('id'=>$id), '*', MUST_EXIST);
+// $id = required_param('id',PARAM_INT);       // course id
+// $course = $DB->get_record('course', array('id'=>$id), '*', MUST_EXIST);
+$id = optional_param('id', '', PARAM_INT);
+$courseid = optional_param('course', '', PARAM_INT);
+$course = ($id ? $id : $courseid);
 
-$PAGE->set_url('/report/grade/index.php', array('id'=>$id));
+$PAGE->set_url('/report/grade/index.php', array('id'=>$course));
 $PAGE->set_pagelayout('report');
 
 require_login($course);
-$context = context_course::instance($course->id);
+$context = context_course::instance($course);
+$PAGE->set_context($context);
 require_capability('report/grade:view', $context);
 
 // Trigger an grade report viewed event.
@@ -46,21 +50,27 @@ $strlast         = get_string('surname', 'report_grade');
 $strid           = get_string('idnumber', 'report_grade');
 $strgrade        = get_string('grade');
 
-$PAGE->set_title($course->shortname .': '. $strgradereport);
-$PAGE->set_heading($course->fullname);
+$PAGE->set_title($COURSE->shortname .': '. $strgradereport);
+$PAGE->set_heading(get_string('pluginname', 'report_grade'));
 echo $OUTPUT->header();
-echo $OUTPUT->heading(format_string($course->fullname));
 
-// List moderators
-echo $OUTPUT->heading('Moderators', 4);
-$users = get_role_users(62, context_course::instance($course->id), false, 'u.id, u.lastname, u.firstname', 'u.lastname, u.firstname');
-if(count($users) > 0){
-  foreach ($users as $key => $value) {
-    echo $value->firstname . " " . $value->lastname . "<br/><br/>";
+// Display moderators
+echo $OUTPUT->heading(get_string('moderator', 'report_grade'), 4);
+$moderators = get_moderators();
+if(count($moderators) > 0){
+  foreach ($moderators as $key => $value) {
+    echo $value->name . "<br/>";
   }
-
 }else{
-  echo "No moderators are currently assigned to this unit.<br/><br/>";
+  echo get_string('nomoderator', 'report_grade');
+}
+// Display External Examiner
+echo $OUTPUT->heading(get_string('externalexaminer', 'report_grade'), 4);
+$ee = get_external_examiner();
+if($ee){
+  echo $ee->name . "<br/>";
+}else{
+  echo get_string('noexternalexaminer', 'report_grade');
 }
 // Set up static column headers
 $table = new html_table();
@@ -71,7 +81,7 @@ $table->head = array($strfirst, $strlast, $strid);
 
 require_once($CFG->dirroot.'/grade/export/lib.php');
 global $DB;
-$assigns = $DB->get_records_sql('SELECT iteminstance, itemname FROM {grade_items} where courseid = ? AND itemmodule = ? AND idnumber != ?', array($course->id,'assign', ''));
+$assigns = $DB->get_records_sql('SELECT iteminstance, itemname FROM {grade_items} where courseid = ? AND itemmodule = ? AND idnumber != ?', array($course,'assign', ''));
 if(count($assigns) > 0){
   $users = get_enrolled_users(context_course::instance($course->id), 'mod/assign:submit', 0, 'u.*', 'firstname');
   $a = implode(",",array_keys($assigns));
@@ -160,7 +170,7 @@ if(count($assigns) > 0){
   echo "<br>";
   echo $OUTPUT->notification( get_string('noassignments', 'report_grade'), \core\output\notification::NOTIFY_INFO);
 }
-
+echo get_ee_form_url();
 echo "<input type='button' id='print_button'onClick='window.print()'' value='Print this report'/>";
 
 echo $OUTPUT->footer();

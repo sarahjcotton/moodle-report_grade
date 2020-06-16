@@ -130,3 +130,43 @@ function get_sample($sample, $iteminstance, $userid){
   }
   return $return;
 }
+
+function get_external_examiner(){
+  global $DB, $COURSE;
+  $externalexaminer = $DB->get_record_sql("SELECT CONCAT(u.firstname, ' ', u.lastname) name
+                                        FROM {user} u
+                                        INNER JOIN {role_assignments} ra ON ra.userid = u.id
+                                        INNER JOIN {context} ct ON ct.id = ra.contextid
+                                        INNER JOIN {course} c ON c.id = ct.instanceid
+                                        INNER JOIN {role} r ON r.id = ra.roleid
+                                        WHERE r.shortname = ?
+                                        AND c.id = ?",
+                                        array(get_config('report_grade', 'externalexaminershortname'), $COURSE->id));
+    return $externalexaminer;
+}
+
+function get_moderators(){
+  global $DB, $COURSE;
+  $externalexaminer = $DB->get_records_sql("SELECT CONCAT(u.firstname, ' ', u.lastname) name
+                                        FROM {user} u
+                                        INNER JOIN {role_assignments} ra ON ra.userid = u.id
+                                        INNER JOIN {context} ct ON ct.id = ra.contextid
+                                        INNER JOIN {course} c ON c.id = ct.instanceid
+                                        INNER JOIN {role} r ON r.id = ra.roleid
+                                        WHERE r.shortname = ?
+                                        AND c.id = ?",
+                                        array(get_config('report_grade', 'moderatorshortname'), $COURSE->id));
+    return $externalexaminer;
+}
+
+function get_ee_form_url(){
+	global $DB, $COURSE;
+	$dbman = $DB->get_manager();
+  if($dbman->table_exists('report_ee')){
+		$url = new moodle_url('/report/ee/index.php', array('id'=>$COURSE->id));
+		$url = "<p><a href='". $url . "'>" . get_string('reportlink', 'report_ee'). "</a></p>";
+
+		return $url;
+	}
+		return null;
+}
