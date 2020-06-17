@@ -164,7 +164,7 @@ function get_ee_form_url(){
 	$dbman = $DB->get_manager();
   if($dbman->table_exists('report_ee')){
 		$url = new moodle_url('/report/ee/index.php', array('id'=>$COURSE->id));
-		$url = "<p><a href='". $url . "'>" . get_string('reportlink', 'report_ee'). "</a></p>";
+		$url = "<p><a href='". $url . "'>" . get_string('reporturl', 'report_grade'). "</a></p>";
 
 		return $url;
 	}
