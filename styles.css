@@ -10,6 +10,10 @@
     font-size: 0.8em;
 }
 
+#page-report-grade-index th{
+	text-align: left;
+}
+
 #page-report-grade-user .section .content {
     margin-left: 30px;
     margin-right: 30px;
