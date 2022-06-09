@@ -83,37 +83,37 @@ $table->head = array($strfirst, $strlast, $strid);
 
 require_once($CFG->dirroot.'/grade/export/lib.php');
 global $DB;
+// Use the cm_idnumber rather than the gi_idnumber as the gi_idnumber seems to disappear sometimes.
 $sql = "SELECT gi.iteminstance, gi.itemname
   FROM {grade_items} gi
   JOIN {course_modules} cm ON cm.instance = gi.iteminstance
   JOIN {modules} m ON m.id = cm.module AND m.name = 'assign'
   WHERE gi.courseid = :courseid AND gi.itemmodule = 'assign' AND cm.idnumber != ''";
 $assigns = $DB->get_records_sql($sql, ['courseid' => $course]);
-// $assigns = $DB->get_records_sql('SELECT iteminstance, itemname FROM {grade_items} where courseid = ? AND itemmodule = ? AND idnumber != ?', array($course,'assign', ''));
 if (count($assigns) == 0) {
     echo "<br>";
     echo $OUTPUT->notification( get_string('noassignments', 'report_grade'), \core\output\notification::NOTIFY_INFO);
     echo $OUTPUT->footer();
-    die();
+    // End the output early.
+    exit();
 }
 
 $users = get_enrolled_users($context, 'mod/assign:submit', 0, 'u.*', 'firstname');
-$a = implode(",", array_keys($assigns));
-$a = "(" . $a . ")";
+[$insql, $inparams] = $DB->get_in_or_equal(array_keys($assigns));
 
 $sqldouble = "SELECT g.id, d.assignment, a.grade, g.userid, d.first_grade, d.second_grade, a.name, a.grade scale
             FROM {assignfeedback_doublemark} d
             JOIN {assign_grades} g ON g.assignment = d.assignment AND g.id = d.grade
             JOIN {assign} a ON a.id = g.assignment
-            WHERE d.assignment IN $a";
+            WHERE d.assignment $insql";
 
-$doublemarks = $DB->get_records_sql($sqldouble);
+$doublemarks = $DB->get_records_sql($sqldouble, $inparams);
 
 $sqlsample = "SELECT g.id, g.userid, s.assignment, s.sample
             FROM {assignfeedback_sample} s
             LEFT JOIN {assign_grades} g ON g.assignment = s.assignment AND g.id = s.grade
-            WHERE s.assignment IN $a";
-$sample = $DB->get_records_sql($sqlsample);
+            WHERE s.assignment $insql";
+$sample = $DB->get_records_sql($sqlsample, $inparams);
 $allgrades = [];
 $confdouble = [];
 $confsample = [];
