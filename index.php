@@ -85,7 +85,13 @@ $table->head = array($strfirst, $strlast, $strid);
 
 require_once($CFG->dirroot.'/grade/export/lib.php');
 global $DB;
-$assigns = $DB->get_records_sql('SELECT iteminstance, itemname FROM {grade_items} where courseid = ? AND itemmodule = ? AND idnumber != ?', array($course,'assign', ''));
+$sql = "SELECT gi.iteminstance, gi.itemname
+  FROM {grade_items} gi
+  JOIN {course_modules} cm ON cm.instance = gi.iteminstance
+  JOIN {modules} m ON m.id = cm.module AND m.name = 'assign'
+  WHERE gi.courseid = :courseid AND gi.itemmodule = 'assign' AND cm.idnumber != ''";
+$assigns = $DB->get_records_sql($sql, ['courseid' => $course]);
+// $assigns = $DB->get_records_sql('SELECT iteminstance, itemname FROM {grade_items} where courseid = ? AND itemmodule = ? AND idnumber != ?', array($course,'assign', ''));
 if(count($assigns) > 0){
   $users = get_enrolled_users($context, 'mod/assign:submit', 0, 'u.*', 'firstname');
   $a = implode(",",array_keys($assigns));
