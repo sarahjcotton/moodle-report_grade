@@ -92,7 +92,13 @@ $sql = "SELECT gi.iteminstance, gi.itemname
   WHERE gi.courseid = :courseid AND gi.itemmodule = 'assign' AND cm.idnumber != ''";
 $assigns = $DB->get_records_sql($sql, ['courseid' => $course]);
 // $assigns = $DB->get_records_sql('SELECT iteminstance, itemname FROM {grade_items} where courseid = ? AND itemmodule = ? AND idnumber != ?', array($course,'assign', ''));
-if(count($assigns) > 0){
+if (count($assigns) == 0) {
+  echo "<br>";
+  echo $OUTPUT->notification( get_string('noassignments', 'report_grade'), \core\output\notification::NOTIFY_INFO);
+  echo $OUTPUT->footer();
+  die();
+}
+
   $users = get_enrolled_users($context, 'mod/assign:submit', 0, 'u.*', 'firstname');
   $a = implode(",",array_keys($assigns));
   $a = "(" . $a . ")";
@@ -175,12 +181,8 @@ if(count($assigns) > 0){
     }
   } $table->data[] = $row;
 }
-  echo html_writer::table($table);
-}else{
-  echo "<br>";
-  echo $OUTPUT->notification( get_string('noassignments', 'report_grade'), \core\output\notification::NOTIFY_INFO);
-}
 
+echo html_writer::table($table);
 echo "<input type='button' id='print_button'onClick='window.print()'' value='Print this report'/>";
 
 echo $OUTPUT->footer();
