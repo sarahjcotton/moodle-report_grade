@@ -30,7 +30,7 @@ $id = optional_param('id', '', PARAM_INT);
 $courseid = optional_param('course', '', PARAM_INT);
 $course = ($id ? $id : $courseid);
 
-$PAGE->set_url('/report/grade/index.php', array('id'=>$course));
+$PAGE->set_url('/report/grade/index.php', array('id' => $course));
 $PAGE->set_pagelayout('report');
 
 require_login($course);
@@ -53,30 +53,28 @@ $strlast         = get_string('surname', 'report_grade');
 $strid           = get_string('idnumber', 'report_grade');
 $strgrade        = get_string('grade');
 
-//echo $OUTPUT->heading(format_string($course->fullname));
-
-// Display moderators
+// Display moderators.
 echo $OUTPUT->heading(get_string('moderator', 'report_grade'), 4);
 $moderators = get_moderators();
-if(count($moderators) > 0){
-  foreach ($moderators as $key => $value) {
-    echo $value->name . "<br/>";
-  }
-}else{
-  echo get_string('nomoderator', 'report_grade');
+if (count($moderators) > 0) {
+    foreach ($moderators as $key => $value) {
+        echo $value->name . "<br/>";
+    }
+} else {
+    echo get_string('nomoderator', 'report_grade');
 }
-// Display External Examiner
+// Display External Examiner.
 echo $OUTPUT->heading(get_string('externalexaminer', 'report_grade'), 4);
 $ee = get_external_examiner();
-if($ee){
-  echo "<p>" . $ee->name . "</p>";
-}else{
-  echo "<p>" . get_string('noexternalexaminer', 'report_grade') . "</p>";
+if ($ee) {
+    echo "<p>" . $ee->name . "</p>";
+} else {
+    echo "<p>" . get_string('noexternalexaminer', 'report_grade') . "</p>";
 }
 
 echo get_ee_form_url();
 
-// Set up static column headers
+// Set up static column headers.
 $table = new html_table();
 $table->attributes['class'] = 'generaltable boxaligncenter';
 $table->cellpadding = 5;
@@ -93,93 +91,108 @@ $sql = "SELECT gi.iteminstance, gi.itemname
 $assigns = $DB->get_records_sql($sql, ['courseid' => $course]);
 // $assigns = $DB->get_records_sql('SELECT iteminstance, itemname FROM {grade_items} where courseid = ? AND itemmodule = ? AND idnumber != ?', array($course,'assign', ''));
 if (count($assigns) == 0) {
-  echo "<br>";
-  echo $OUTPUT->notification( get_string('noassignments', 'report_grade'), \core\output\notification::NOTIFY_INFO);
-  echo $OUTPUT->footer();
-  die();
+    echo "<br>";
+    echo $OUTPUT->notification( get_string('noassignments', 'report_grade'), \core\output\notification::NOTIFY_INFO);
+    echo $OUTPUT->footer();
+    die();
 }
 
-  $users = get_enrolled_users($context, 'mod/assign:submit', 0, 'u.*', 'firstname');
-  $a = implode(",",array_keys($assigns));
-  $a = "(" . $a . ")";
+$users = get_enrolled_users($context, 'mod/assign:submit', 0, 'u.*', 'firstname');
+$a = implode(",", array_keys($assigns));
+$a = "(" . $a . ")";
 
-  $sql_double = "SELECT g.id, d.assignment, a.grade, g.userid, d.first_grade, d.second_grade, a.name, a.grade scale
-                FROM {assignfeedback_doublemark} d
-                JOIN {assign_grades} g ON g.assignment = d.assignment AND g.id = d.grade
-                JOIN {assign} a ON a.id = g.assignment
-                WHERE d.assignment IN $a";
+$sqldouble = "SELECT g.id, d.assignment, a.grade, g.userid, d.first_grade, d.second_grade, a.name, a.grade scale
+            FROM {assignfeedback_doublemark} d
+            JOIN {assign_grades} g ON g.assignment = d.assignment AND g.id = d.grade
+            JOIN {assign} a ON a.id = g.assignment
+            WHERE d.assignment IN $a";
 
-  $doublemarks = $DB->get_records_sql($sql_double);
+$doublemarks = $DB->get_records_sql($sqldouble);
 
-  $sql_sample = "SELECT g.id, g.userid, s.assignment, s.sample
-                FROM {assignfeedback_sample} s
-                LEFT JOIN {assign_grades} g ON g.assignment = s.assignment AND g.id = s.grade
-                WHERE s.assignment IN $a";
-  $sample = $DB->get_records_sql($sql_sample);
-  $allgrades = array();
+$sqlsample = "SELECT g.id, g.userid, s.assignment, s.sample
+            FROM {assignfeedback_sample} s
+            LEFT JOIN {assign_grades} g ON g.assignment = s.assignment AND g.id = s.grade
+            WHERE s.assignment IN $a";
+$sample = $DB->get_records_sql($sqlsample);
+$allgrades = [];
+$confdouble = [];
+$confsample = [];
+foreach ($assigns as $k => $v) {
+    // Set up assignment column headers.
+    $confdouble[$k] = $DB->get_record('assign_plugin_config', array(
+        'assignment' => $v->iteminstance,
+        'plugin' => 'doublemark',
+        'subtype' => 'assignfeedback',
+        'name' => 'enabled'));
+    $confsample[$k] = $DB->get_record('assign_plugin_config', array(
+        'assignment' => $v->iteminstance,
+        'plugin' => 'sample',
+        'subtype' => 'assignfeedback',
+        'name' => 'enabled'));
 
-  foreach($assigns as $k => $v){
-    //Set up assignment column headers
-    $conf_double = $DB->get_record('assign_plugin_config', array('assignment'=>$v->iteminstance, 'plugin'=>'doublemark', 'subtype'=>'assignfeedback', 'name'=>'enabled'));
-    $conf_sample = $DB->get_record('assign_plugin_config', array('assignment'=>$v->iteminstance, 'plugin'=>'sample', 'subtype'=>'assignfeedback', 'name'=>'enabled'));
-
-    if($conf_double->name == "enabled" && $conf_double->value == 1){
-      $table->head[] = ($v->itemname . get_string('firstmark', 'report_grade'));
-      $table->head[] = ($v->itemname . get_string('secondmark', 'report_grade'));
+    if ($confdouble[$k]->name == "enabled" && $confdouble[$k]->value == 1) {
+        $table->head[] = ($v->itemname . get_string('firstmark', 'report_grade'));
+        $table->head[] = ($v->itemname . get_string('secondmark', 'report_grade'));
     }
-    $table->head[] = ($v->itemname . get_string('finalgrade', 'report_grade'));
-   if($conf_sample->name == "enabled" && $conf_sample->value == 1){
-      $table->head[] = ($v->itemname . get_string('sample', 'report_grade'));
-   }
-    $allgrades[] = grade_get_grades($course, 'mod', 'assign', $v->iteminstance, array_keys($users));
-  }
 
-  foreach($users as $ku => $vu){
+    $table->head[] = ($v->itemname . get_string('finalgrade', 'report_grade'));
+
+    if ($confsample[$k]->name == "enabled" && $confsample[$k]->value == 1) {
+        $table->head[] = ($v->itemname . get_string('sample', 'report_grade'));
+    }
+
+    $allgrades[] = grade_get_grades($course, 'mod', 'assign', $v->iteminstance, array_keys($users));
+}
+
+foreach ($users as $ku => $vu) {
     $row = new html_table_row();
     $cell1 = new html_table_cell($vu->firstname);
     $cell2 = new html_table_cell($vu->lastname);
     $cell3 = new html_table_cell($vu->idnumber);
     $row->cells = array($cell1, $cell2, $cell3);
 
-    foreach($assigns as $k => $v){
+    foreach ($assigns as $k => $v) {
+        foreach ($allgrades as $kg => $vg) {
+            foreach ($vg->items as $ki => $vi) {
+                if ($vi->iteminstance == $v->iteminstance) {
+                    $userdoublemarks = get_doublemarks($doublemarks, $v->iteminstance, $vu->id);
 
-      $conf_double = $DB->get_record('assign_plugin_config', array('assignment'=>$v->iteminstance, 'plugin'=>'doublemark', 'subtype'=>'assignfeedback', 'name'=>'enabled'));
-      $conf_sample = $DB->get_record('assign_plugin_config', array('assignment'=>$v->iteminstance, 'plugin'=>'sample', 'subtype'=>'assignfeedback', 'name'=>'enabled'));
-      foreach($allgrades as $kg => $vg){
-        foreach($vg->items as $ki => $vi){
-        if($vi->iteminstance == $v->iteminstance){
-          $userdoublemarks = get_doublemarks($doublemarks, $v->iteminstance, $vu->id);
+                    if ($confdouble[$k]->name == "enabled" && $confdouble[$k]->value == 1) {
+                        if (!empty($userdoublemarks)) {
+                            $row->cells[] = new html_table_cell(
+                                convert_grade_report($userdoublemarks['scale'], $userdoublemarks['first'])
+                            );
+                            $row->cells[] = new html_table_cell(
+                                convert_grade_report($userdoublemarks['scale'], $userdoublemarks['second'])
+                            );
+                        } else {
+                            $row->cells[] = new html_table_cell();
+                            $row->cells[] = new html_table_cell();
+                        }
+                    }
 
-          if($conf_double->name == "enabled" && $conf_double->value == 1){
-            if(!empty($userdoublemarks)){
-              $row->cells[] = new html_table_cell(convert_grade_report($userdoublemarks['scale'], $userdoublemarks['first']));
-              $row->cells[] = new html_table_cell(convert_grade_report($userdoublemarks['scale'],$userdoublemarks['second']));
-            }else{
-              $row->cells[] = new html_table_cell();
-              $row->cells[] = new html_table_cell();
+                    if ($vi->grades[$vu->id]->str_grade == '-') {
+                        $row->cells[] = new html_table_cell();
+                    } else {
+                        $row->cells[] = new html_table_cell($vi->grades[$vu->id]->str_grade);
+                    }
+
+                    if ($confsample[$k]->name == "enabled" && $confsample[$k]->value == 1) {
+                        if (!empty($sample)) {
+                            $cm = get_coursemodule_from_instance('assign', $vi->iteminstance);
+                            $link = '/mod/assign/view.php?id=' . $cm->id . '&rownum=0&action=grader&userid=' . $vu->id;
+                            $linktext = get_sample($sample, $v->iteminstance, $vu->id);
+
+                            $row->cells[] = new html_table_cell(html_writer::link($link, $linktext));
+                        } else {
+                            $row->cells[] = new html_table_cell();
+                        }
+                    }
+                }
             }
-          }
-
-          if($vi->grades[$vu->id]->str_grade == '-'){
-            $row->cells[] = new html_table_cell();
-          }else{
-            $row->cells[] = new html_table_cell($vi->grades[$vu->id]->str_grade);
-          }
-          if($conf_sample->name == "enabled" && $conf_sample->value == 1){
-            if(!empty($sample)){
-              $cm = get_coursemodule_from_instance('assign', $vi->iteminstance);
-              $link = '/mod/assign/view.php?id=' . $cm->id . '&rownum=0&action=grader&userid=' . $vu->id;
-              $linktext = get_sample($sample, $v->iteminstance, $vu->id);
-
-              $row->cells[] = new html_table_cell(html_writer::link($link, $linktext));
-            }else{
-              $row->cells[] = new html_table_cell();
-            }
-          }
         }
-      }
     }
-  } $table->data[] = $row;
+    $table->data[] = $row;
 }
 
 echo html_writer::table($table);
