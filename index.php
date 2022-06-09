@@ -100,8 +100,8 @@ if(count($assigns) > 0){
   $doublemarks = $DB->get_records_sql($sql_double);
 
   $sql_sample = "SELECT g.id, g.userid, s.assignment, s.sample
-                FROM mdl_assignfeedback_sample s
-                LEFT JOIN mdl_assign_grades g ON g.assignment = s.assignment AND g.id = s.grade
+                FROM {assignfeedback_sample} s
+                LEFT JOIN {assign_grades} g ON g.assignment = s.assignment AND g.id = s.grade
                 WHERE s.assignment IN $a";
   $sample = $DB->get_records_sql($sql_sample);
   $allgrades = array();
