@@ -35,6 +35,7 @@ $string['moderator'] = 'Moderator';
 $string['moderatorshortname'] = 'Moderator role shortname';
 $string['neverseen'] = 'Never seen';
 $string['noassignments'] = 'Either there are no Quercus assignments in this unit or they haven\'t been set up yet.';
+$string['noquercusassignments'] = 'No Quercus assignments found for this module';
 $string['nologreaderenabled'] = 'No log reader enabled';
 $string['noexternalexaminer'] = 'No external examiners are currently assigned to this module';
 $string['nomoderator'] = 'No moderators are currently assigned to this module';
