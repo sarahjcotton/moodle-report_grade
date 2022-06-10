@@ -44,7 +44,9 @@ $string['page-report-grade-x'] = 'Any grade report';
 $string['page-report-grade-index'] = 'Course grade report';
 $string['page-report-grade-user'] = 'User course grade report';
 $string['pluginname'] = 'Grade report';
-$string['reporturl'] = ' Link to External Examiner Feedback report';
+$string['reporturl'] = ' External Examiner Feedback report';
+
 $string['sample'] = ' Sample';
 $string['secondmark'] = ' Second mark';
+$string['srsurl'] = 'Marks upload status';
 $string['surname'] = 'Surname';

@@ -72,7 +72,11 @@ if ($ee) {
     echo "<p>" . get_string('noexternalexaminer', 'report_grade') . "</p>";
 }
 
-echo get_ee_form_url();
+$eeurl = get_ee_form_url();
+$srsurl = html_writer::link(new moodle_url('/report/grade/srsstatus.php', ['id' => $course]),
+    get_string('srsurl', 'report_grade'),
+    ['class' => 'btn btn-primary']);
+echo html_writer::tag('p', $eeurl . ' ' . $srsurl);
 
 // Set up static column headers.
 $table = new html_table();

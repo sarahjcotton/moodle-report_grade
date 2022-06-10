@@ -160,14 +160,14 @@ function get_moderators(){
     return $externalexaminer;
 }
 
-function get_ee_form_url(){
+function get_ee_form_url() {
 	global $DB, $COURSE;
 	$dbman = $DB->get_manager();
-  if($dbman->table_exists('report_ee')){
-		$url = new moodle_url('/report/ee/index.php', array('id'=>$COURSE->id));
-		$url = "<p><a href='". $url . "'>" . get_string('reporturl', 'report_grade'). "</a></p>";
+  	if ($dbman->table_exists('report_ee')) {
+		$url = new moodle_url('/report/ee/index.php', array('id' => $COURSE->id));
+		$url = html_writer::link($url, get_string('reporturl', 'report_grade'), ['class' => 'btn btn-primary']);
 
 		return $url;
 	}
-		return null;
+	return null;
 }
