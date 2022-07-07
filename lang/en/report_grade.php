@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['externaldate'] = 'External date: {$a}';
 $string['externalexaminer'] = 'External Examiner';
 $string['externalexaminershortname'] = 'External Examiner role shortname';
 $string['eventgradereportviewed'] = 'Grade report viewed';
@@ -48,6 +49,11 @@ $string['pluginname'] = 'Grade report';
 $string['reporturl'] = ' External Examiner Feedback report';
 
 $string['sample'] = ' Sample';
+$string['scaleitemnotfound'] = '-';
 $string['secondmark'] = ' Second mark';
+$string['sitting'] = 'Sitting: {$a}';
+$string['srsstatus'] = 'Marks upload status';
+$string['srstitlecourseassignment'] = 'Marks upload status for assignment "{$a->assignname}" in "{$a->shortname}"';
+$string['srstitlecourse'] = 'Quercus assignments in "{$a->shortname}"';
 $string['srsurl'] = 'Marks upload status';
 $string['surname'] = 'Surname';
