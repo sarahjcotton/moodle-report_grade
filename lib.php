@@ -17,13 +17,11 @@
 /**
  * This file contains public API of grade report
  *
- * @package    report
- * @subpackage grade
+ * @package    report_grade
  * @copyright  2009 Sam Hemelryk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
 
 /**
  * This function extends the course navigation with the report items
@@ -34,8 +32,9 @@ defined('MOODLE_INTERNAL') || die;
  */
 function report_grade_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('report/grade:view', $context)) {
-        $url = new moodle_url('/report/grade/index.php', array('id'=>$course->id));
-        $navigation->add(get_string('pluginname', 'report_grade'), $url, navigation_node::TYPE_SETTING, null, null, new pix_icon('i/report', ''));
+        $url = new moodle_url('/report/grade/index.php', array('id' => $course->id));
+        $navigation->add(get_string('pluginname', 'report_grade'),
+            $url, navigation_node::TYPE_SETTING, null, null, new pix_icon('i/report', ''));
         $url = new moodle_url('/report/grade/srsstatus.php', ['id' => $course->id]);
         $navigation->add(get_string('srsurl', 'report_grade'), $url, navigation_node::TYPE_SETTING);
     }
@@ -50,25 +49,9 @@ function report_grade_extend_navigation_course($navigation, $course, $context) {
  */
 function report_grade_page_type_list($pagetype, $parentcontext, $currentcontext) {
     $array = array(
-        '*'                    => get_string('page-x', 'pagetype'),
-        'report-*'             => get_string('page-report-x', 'pagetype'),
-        'report-grade-*'     => get_string('page-report-grade-x',  'report_grade'),
-        //'report-grade-index' => get_string('page-report-grade-index',  'report_grade'),
-        //'report-grade-user'  => get_string('page-report-grade-user',  'report_grade')
+        '*' => get_string('page-x', 'pagetype'),
+        'report-*' => get_string('page-report-x', 'pagetype'),
+        'report-grade-*' => get_string('page-report-grade-x',  'report_grade'),
     );
     return $array;
 }
-
-/**
- * Callback to verify if the given instance of store is supported by this report or not.
- *
- * @param string $instance store instance.
- *
- * @return bool returns true if the store is supported by the report, false otherwise.
- */
-// function report_grade_supports_logstore($instance) {
-    // if ($instance instanceof \core\log\sql_internal_table_reader || $instance instanceof \logstore_legacy\log\store) {
-        // return true;
-    // }
-    // return false;
-// }

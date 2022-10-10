@@ -22,8 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+defined('MOODLE_INTERNAL') || die();
 
 $settings = new admin_settingpage('report_grade', new lang_string('pluginname', 'report_grade'));
-$settings->add(new admin_setting_configtext('report_grade/moderatorshortname', get_string('moderatorshortname', 'report_grade'), '', ''));
-$settings->add(new admin_setting_configtext('report_grade/externalexaminershortname', get_string('externalexaminershortname', 'report_grade'), '', ''));
+$settings->add(new admin_setting_configtext('report_grade/moderatorshortname',
+    get_string('moderatorshortname', 'report_grade'), '', ''));
+$settings->add(new admin_setting_configtext('report_grade/externalexaminershortname',
+    get_string('externalexaminershortname', 'report_grade'), '', ''));

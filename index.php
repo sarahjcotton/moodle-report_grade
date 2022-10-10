@@ -17,8 +17,7 @@
 /**
  * Display user grade reports for a course (totals)
  *
- * @package    report
- * @subpackage grade
+ * @package    report_grade
  * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -51,7 +50,7 @@ $strgradereport  = get_string('pluginname', 'report_grade');
 $strfirst        = get_string('firstname', 'report_grade');
 $strlast         = get_string('surname', 'report_grade');
 $strid           = get_string('idnumber', 'report_grade');
-$strgrade        = get_string('grade');
+$strgrade        = get_string('grade', 'report_grade');
 
 // Display moderators.
 echo $OUTPUT->heading(get_string('moderator', 'report_grade'), 4);

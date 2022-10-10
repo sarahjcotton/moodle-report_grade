@@ -37,7 +37,6 @@ require_capability('report/grade:view', $coursecontext);
 $course = $DB->get_record('course', ['id' => $courseid]);
 
 $PAGE->set_url('/report/grade/srsstatus.php', array('id' => $courseid, 'aid' => $aid));
-// $PAGE->set_pagelayout('report');
 $PAGE->set_context($coursecontext);
 $title = new lang_string('srstitlecourse', 'report_grade', ['shortname' => $course->shortname]);
 
@@ -51,7 +50,6 @@ if ($aid > 0) {
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-// $PAGE->navbar->ignore_active();
 $PAGE->navbar->add(get_string('pluginname',  'report_grade'), new moodle_url('/report/grade/', ['id' => $courseid]));
 $PAGE->navbar->add(get_string('srsstatus',  'report_grade'));
 

@@ -23,7 +23,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace report_grade\output;
 
 use renderable;
@@ -31,11 +30,25 @@ use renderer_base;
 use stdClass;
 use templatable;
 
+/**
+ * Outputs sitting and board date for assignment
+ */
 class assignmentinfo implements renderable, templatable {
+    /**
+     * Constructor
+     *
+     * @param stdClass $data
+     */
     public function __construct($data) {
         $this->data = $data;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param renderer_base $output
+     * @return stdClass Context for template
+     */
     public function export_for_template(renderer_base $output) {
         $data = new stdClass();
         if ($this->data->sitting) {

@@ -17,8 +17,7 @@
 /**
  * Strings
  *
- * @package    report
- * @subpackage grade
+ * @package    report_grade
  * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -57,3 +56,4 @@ $string['srstitlecourseassignment'] = 'Marks upload status for assignment "{$a->
 $string['srstitlecourse'] = 'Quercus assignments in "{$a->shortname}"';
 $string['srsurl'] = 'Marks upload status';
 $string['surname'] = 'Surname';
+$string['grade'] = 'Grade';

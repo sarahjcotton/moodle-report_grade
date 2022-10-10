@@ -28,15 +28,40 @@ namespace report_grade\tables;
 use mod_assign_external;
 use moodle_url;
 use table_sql;
+defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/tablelib.php");
 require_once("$CFG->dirroot/mod/assign/externallib.php");
+/**
+ * Outputs the Student records marks upload status for given assignment
+ */
 class srsstatus extends table_sql {
 
-    private $grades = null;
+    /**
+     * Data required for assembling the table
+     *
+     * @var stdClass
+     */
     private $data;
+    /**
+     * The grade item for this assignment
+     *
+     * @var stdClass
+     */
     private $gradeitem;
 
+    /**
+     * Scale record with added exploded items
+     *
+     * @var stdClass
+     */
+    private $scale;
+
+    /**
+     * Constructor for table
+     *
+     * @param stdClass $data Containing courseid and assignment instance
+     */
     public function __construct($data) {
         $this->useridfield = 'student';
         $this->data = $data;
@@ -44,12 +69,10 @@ class srsstatus extends table_sql {
         $gradeitems = \local_quercus_tasks\api::get_quercus_gradeitems(
             $data->courseid, $data->assignment->id
         );
-        // print_r($gradeitems);
         // There should only be one. Not less, not more. If there's not, there's a problem.
         $this->gradeitem = array_shift($gradeitems);
-        // print_r($this->gradeitem);
         $this->scale = \local_quercus_tasks\api::get_scale($this->gradeitem->scaleid);
-        // print_r($this->scale);
+
         $columns = [
             'id',
             'fullname',
@@ -94,15 +117,33 @@ class srsstatus extends table_sql {
         ['courseid' => $data->courseid, 'assign' => $data->assignment->id]);
     }
 
+    /**
+     * Grader column
+     *
+     * @param stdClass $row
+     * @return string
+     */
     protected function col_grader($row) {
         $grader = \core_user::get_user($row->grader);
         return fullname($grader);
     }
 
+    /**
+     * Time created column
+     *
+     * @param stdClass $row
+     * @return string
+     */
     protected function col_timecreated($row) {
         return userdate($row->timecreated);
     }
 
+    /**
+     * Time modified column
+     *
+     * @param stdClass $row
+     * @return string
+     */
     protected function col_timemodifed($row) {
         if ($row->timemodifed > 0) {
             return userdate($row->timemodified);
@@ -110,6 +151,12 @@ class srsstatus extends table_sql {
         return '';
     }
 
+    /**
+     * Solent converted grade
+     *
+     * @param stdClass $row
+     * @return string
+     */
     protected function col_solentgrade($row) {
         if (is_null($row->solentgrade)) {
             return 'Unmarked';
@@ -128,7 +175,7 @@ class srsstatus extends table_sql {
     /**
      * This function is not part of the public api.
      */
-    function print_nothing_to_display() {
+    public function print_nothing_to_display() {
         global $OUTPUT;
 
         // Render the dynamic table header.
@@ -140,11 +187,8 @@ class srsstatus extends table_sql {
         $this->print_initials_bar();
 
         echo $OUTPUT->heading(get_string('nothingtodisplay'));
-        if ($this->gradeitem)
-        echo "<p>Reasons</p>";
 
         // Render the dynamic table footer.
         echo $this->get_dynamic_table_html_end();
     }
 }
-

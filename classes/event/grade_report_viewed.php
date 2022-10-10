@@ -23,8 +23,6 @@
  */
 namespace report_grade\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The report_grade grade report viewed event class.
  *

@@ -23,8 +23,6 @@
  */
 namespace report_grade\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The report_grade grade report viewed event class.
  *
@@ -106,6 +104,11 @@ class report_viewed extends \core\event\base {
         }
     }
 
+    /**
+     * I'm not convinced this is used
+     *
+     * @return bool
+     */
     public static function get_other_mapping() {
         // Nothing to map.
         return false;
