@@ -17,15 +17,14 @@
 /**
  * Version info
  *
- * @package    report
- * @subpackage grade
+ * @package    report_grade
  * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2021021503;       // The current plugin version (Date: YYYYMMDDXX)
+$plugin->version   = 2021021504;
 $plugin->release = 'v3.9-r3';
-$plugin->requires  = 2020061500;       // Requires this Moodle version
-$plugin->component = 'report_grade'; // Full name of the plugin (used for diagnostics)
+$plugin->requires  = 2020061500;
+$plugin->component = 'report_grade';

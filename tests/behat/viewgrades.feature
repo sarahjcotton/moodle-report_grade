@@ -35,8 +35,7 @@ Feature: See grades for students
     @javascript
     Scenario: No valid assignments to report on
         When I log in as "teacher1"
-        And I am on "Course 1" course homepage
-        And I navigate to "Grade report" in current page administration
+        And I am on the "Course 1" "report_grade > Grade report" page
         And I should see "Either there are no Quercus assignments in this unit or they haven't been set up yet."
 
     @javascript
@@ -74,8 +73,7 @@ Feature: See grades for students
             | 2021_REPORT1  | student2 | I'm the third submission  |
             | 2021_PRES1    | student2 | I'm the forth submission  |
         Given I log in as "teacher1"
-        And I am on "Course 1" course homepage
-        And I navigate to "Grade report" in current page administration
+        And I am on the "Course 1" "report_grade > Grade report" page
         Then the following should exist in the "gradetable" table:
             | Firstname | Surname | Report 1 (50%) First mark | Report 1 (50%) Second mark | Report 1 (50%) Final grade | Report 1 (50%) Sample | Presentation 1 (50%) First mark | Presentation 1 (50%) Second mark | Presentation 1 (50%) Final grade |Presentation 1 (50%) Sample |
             | Student   | 1       |                           |                            |                            |                       |                                 |                                  |                                  |                            |
