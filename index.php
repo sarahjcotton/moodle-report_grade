@@ -54,7 +54,7 @@ $strgrade        = get_string('grade', 'report_grade');
 
 // Display moderators.
 echo $OUTPUT->heading(get_string('moderator', 'report_grade'), 4);
-$moderators = get_moderators();
+$moderators = report_grade_get_moderators();
 if (count($moderators) > 0) {
     foreach ($moderators as $key => $value) {
         echo $value->name . "<br/>";
@@ -64,14 +64,14 @@ if (count($moderators) > 0) {
 }
 // Display External Examiner.
 echo $OUTPUT->heading(get_string('externalexaminer', 'report_grade'), 4);
-$ee = get_external_examiner();
+$ee = report_grade_get_external_examiner();
 if ($ee) {
     echo "<p>" . $ee->name . "</p>";
 } else {
     echo "<p>" . get_string('noexternalexaminer', 'report_grade') . "</p>";
 }
 
-$eeurl = get_ee_form_url();
+$eeurl = report_grade_get_ee_form_url();
 $srsurl = html_writer::link(new moodle_url('/report/grade/srsstatus.php', ['id' => $course]),
     get_string('srsurl', 'report_grade'),
     ['class' => 'btn btn-primary']);
@@ -158,15 +158,15 @@ foreach ($users as $ku => $vu) {
         foreach ($allgrades as $kg => $vg) {
             foreach ($vg->items as $ki => $vi) {
                 if ($vi->iteminstance == $v->iteminstance) {
-                    $userdoublemarks = get_doublemarks($doublemarks, $v->iteminstance, $vu->id);
+                    $userdoublemarks = report_grade_get_doublemarks($doublemarks, $v->iteminstance, $vu->id);
 
                     if ($confdouble[$k]->name == "enabled" && $confdouble[$k]->value == 1) {
                         if (!empty($userdoublemarks)) {
                             $row->cells[] = new html_table_cell(
-                                convert_grade_report($userdoublemarks['scale'], $userdoublemarks['first'])
+                                report_grade_convert_grade_report($userdoublemarks['scale'], $userdoublemarks['first'])
                             );
                             $row->cells[] = new html_table_cell(
-                                convert_grade_report($userdoublemarks['scale'], $userdoublemarks['second'])
+                                report_grade_convert_grade_report($userdoublemarks['scale'], $userdoublemarks['second'])
                             );
                         } else {
                             $row->cells[] = new html_table_cell();
@@ -184,7 +184,7 @@ foreach ($users as $ku => $vu) {
                         if (!empty($sample)) {
                             $cm = get_coursemodule_from_instance('assign', $vi->iteminstance);
                             $link = '/mod/assign/view.php?id=' . $cm->id . '&rownum=0&action=grader&userid=' . $vu->id;
-                            $linktext = get_sample($sample, $v->iteminstance, $vu->id);
+                            $linktext = report_grade_get_sample($sample, $v->iteminstance, $vu->id);
 
                             $row->cells[] = new html_table_cell(html_writer::link($link, $linktext));
                         } else {

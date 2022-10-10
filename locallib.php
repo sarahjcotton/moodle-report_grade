@@ -34,7 +34,7 @@ require_once($CFG->dirroot.'/course/lib.php');
  * @param int $grade
  * @return string
  */
-function convert_grade_report($scaleid, $grade) {
+function report_grade_convert_grade_report($scaleid, $grade) {
     if ($scaleid == get_config('local_quercus_tasks', 'grademarkscale')) { // Solent gradescale.
         $converted = -1;
         switch ($grade){
@@ -120,7 +120,7 @@ function convert_grade_report($scaleid, $grade) {
  * @param int $userid
  * @return array [scale, first, second]
  */
-function get_doublemarks($doublemarks, $iteminstance, $userid) {
+function report_grade_get_doublemarks($doublemarks, $iteminstance, $userid) {
     $return = [];
     foreach ($doublemarks as $doublemark) {
         if ($doublemark->userid == $userid && $iteminstance == $doublemark->assignment) {
@@ -142,7 +142,7 @@ function get_doublemarks($doublemarks, $iteminstance, $userid) {
  * @param int $userid
  * @return string
  */
-function get_sample($samples, $iteminstance, $userid) {
+function report_grade_get_sample($samples, $iteminstance, $userid) {
     $return = '';
     foreach ($samples as $sample) {
         if ($sample->userid == $userid && $iteminstance == $sample->assignment) {
@@ -159,7 +159,7 @@ function get_sample($samples, $iteminstance, $userid) {
  *
  * @return stdClass
  */
-function get_external_examiner() {
+function report_grade_get_external_examiner() {
     global $DB, $COURSE;
     $externalexaminer = $DB->get_record_sql("
         SELECT CONCAT(u.firstname, ' ', u.lastname) name
@@ -179,7 +179,7 @@ function get_external_examiner() {
  *
  * @return array
  */
-function get_moderators() {
+function report_grade_get_moderators() {
     global $DB, $COURSE;
     $externalexaminer = $DB->get_records_sql("
         SELECT CONCAT(u.firstname, ' ', u.lastname) name
@@ -199,7 +199,7 @@ function get_moderators() {
  *
  * @return string
  */
-function get_ee_form_url() {
+function report_grade_get_ee_form_url() {
     global $DB, $COURSE;
     $dbman = $DB->get_manager();
     if ($dbman->table_exists('report_ee')) {
