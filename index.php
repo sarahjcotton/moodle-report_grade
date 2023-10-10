@@ -72,7 +72,7 @@ if ($ee) {
 }
 
 $eeurl = report_grade_get_ee_form_url();
-$srsurl = html_writer::link(new moodle_url('/report/grade/srsstatus.php', ['id' => $course]),
+$srsurl = html_writer::link(new moodle_url('/report/grade/srsstatus.php', ['cid' => $course]),
     get_string('srsurl', 'report_grade'),
     ['class' => 'btn btn-primary']);
 echo html_writer::tag('p', $eeurl . ' ' . $srsurl);
@@ -87,7 +87,7 @@ $table->head = array($strfirst, $strlast, $strid);
 require_once($CFG->dirroot.'/grade/export/lib.php');
 global $DB;
 // Use the cm_idnumber rather than the gi_idnumber as the gi_idnumber seems to disappear sometimes.
-$sql = "SELECT gi.iteminstance, gi.itemname
+$sql = "SELECT gi.iteminstance, gi.itemname, cm.id cmid
   FROM {grade_items} gi
   JOIN {course_modules} cm ON cm.instance = gi.iteminstance
   JOIN {modules} m ON m.id = cm.module AND m.name = 'assign'
@@ -163,10 +163,10 @@ foreach ($users as $ku => $vu) {
                     if ($confdouble[$k]->name == "enabled" && $confdouble[$k]->value == 1) {
                         if (!empty($userdoublemarks)) {
                             $row->cells[] = new html_table_cell(
-                                report_grade_convert_grade_report($userdoublemarks['scale'], $userdoublemarks['first'])
+                                report_grade_convert_grade_report($userdoublemarks['scale'], $userdoublemarks['first'], $v->cmid)
                             );
                             $row->cells[] = new html_table_cell(
-                                report_grade_convert_grade_report($userdoublemarks['scale'], $userdoublemarks['second'])
+                                report_grade_convert_grade_report($userdoublemarks['scale'], $userdoublemarks['second'], $v->cmid)
                             );
                         } else {
                             $row->cells[] = new html_table_cell();

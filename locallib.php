@@ -24,18 +24,26 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/lib.php');
-require_once($CFG->dirroot.'/course/lib.php');
+require_once($CFG->dirroot . '/report/grade/lib.php');
+require_once($CFG->dirroot . '/course/lib.php');
 
 /**
  * Convert grades to Solent Grade
  *
  * @param int $scaleid
  * @param int $grade
+ * @param int $cmid Course module id
  * @return string
  */
-function report_grade_convert_grade_report($scaleid, $grade) {
-    if ($scaleid == get_config('local_quercus_tasks', 'grademarkscale')) { // Solent gradescale.
+function report_grade_convert_grade_report($scaleid, $grade, $cmid) {
+    $issitsassign = \local_solsits\helper::is_sits_assignment($cmid);
+    $grademarkscale = $issitsassign ?
+        get_config('local_solsits', 'grademarkscale') :
+        get_config('local_quercus_tasks', 'grademarkscale');
+    $grademarkexemptscale = $issitsassign ?
+        get_config('local_solsits', 'grademarkexemptscale') :
+        get_config('local_quercus_tasks', 'grademarkexemptscale');
+    if ($scaleid == $grademarkscale) { // Solent gradescale.
         $converted = -1;
         switch ($grade){
             case 18:
@@ -102,11 +110,11 @@ function report_grade_convert_grade_report($scaleid, $grade) {
                 $converted = '';
                 break;
         }
-    } else if ($scaleid == get_config('local_quercus_tasks', 'grademarkexemptscale')) {
+    } else if ($scaleid == $grademarkexemptscale) {
         if ($grade == null || $grade == -1) {
             $converted = '';
         } else {
-            $converted = (int)unformat_float($grade) -1;
+            $converted = (int)unformat_float($grade) - 1;
         }
     }
     return $converted;

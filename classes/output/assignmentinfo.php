@@ -35,6 +35,12 @@ use templatable;
  */
 class assignmentinfo implements renderable, templatable {
     /**
+     * Data about the assignment
+     *
+     * @var stdClass
+     */
+    private $data;
+    /**
      * Constructor
      *
      * @param stdClass $data
@@ -51,12 +57,14 @@ class assignmentinfo implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         $data = new stdClass();
-        if ($this->data->sitting) {
-            $data->sitting = $this->data->sitting;
+        if ($this->data->source == 'quercus') {
+            if ($this->data->assignment->sitting) {
+                $data->sitting = $this->data->assignment->sitting;
+            }
+            if ($this->data->assignment->externaldate) {
+                $data->externaldate = userdate($this->data->assignment->externaldate);
+            }
         }
-        if ($this->data->externaldate) {
-            $this->externaldate = userdate($this->data->externaldate);
-        }
-        return $this->data;
+        return $data;
     }
 }

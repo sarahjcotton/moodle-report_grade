@@ -25,8 +25,10 @@
 
 namespace report_grade\tables;
 
+use lang_string;
 use mod_assign_external;
 use moodle_url;
+use report_grade\helper;
 use table_sql;
 defined('MOODLE_INTERNAL') || die();
 
@@ -63,58 +65,83 @@ class srsstatus extends table_sql {
      * @param stdClass $data Containing courseid and assignment instance
      */
     public function __construct($data) {
-        $this->useridfield = 'student';
+        $this->useridfield = 'studentid';
         $this->data = $data;
+        $this->set_attribute('id', 'report_grade-srs_status');
         parent::__construct('report_grade-srs_status');
-        $gradeitems = \local_quercus_tasks\api::get_quercus_gradeitems(
-            $data->courseid, $data->assignment->id
-        );
-        // There should only be one. Not less, not more. If there's not, there's a problem.
-        $this->gradeitem = array_shift($gradeitems);
-        $this->scale = \local_quercus_tasks\api::get_scale($this->gradeitem->scaleid);
-
         $columns = [
             'id',
             'fullname',
-            'grader',
+            'graderid',
             'solentgrade',
             'converted_grade',
-            'processed',
-            'payload_error',
+            'status',
+            'error_report',
             'timecreated',
             'timemodified'
         ];
 
         $columnheadings = [
-            'ID',
-            'Student',
-            'Grader',
-            'Solent grade',
-            'Converted grade',
-            'Status',
-            'Error report',
-            'Time queued',
-            'Time processed'
+            'id',
+            new lang_string('student', 'report_grade'),
+            new lang_string('grader', 'report_grade'),
+            new lang_string('solentgrade', 'report_grade'),
+            new lang_string('convertedgrade', 'report_grade'),
+            new lang_string('status', 'report_grade'),
+            new lang_string('errorreport', 'report_grade'),
+            new lang_string('timequeued', 'report_grade'),
+            new lang_string('timeprocessed', 'report_grade')
         ];
         $this->define_columns($columns);
         $this->define_headers($columnheadings);
         $this->sortable(true, 'student');
         $this->collapsible(false);
+        $courseid = $data->courseid;
+        $assignid = 0;
+        $params = ['cid' => $courseid];
+        if ($data->source == 'quercus') {
+            $assignid = $data->assignment->id;
+            $params['qid'] = $assignid;
+        } else {
+            $cmid = $data->assignment->get('cmid');
+            $cm = get_fast_modinfo($courseid)->get_cm($cmid);
+            $assignid = $cm->instance;
+            $params['sid'] = $data->assignment->get('id');
+        }
+        $this->define_baseurl(new moodle_url('/report/grade/srsstatus.php', $params));
+        $gradeitems = helper::get_gradeitems($courseid, $assignid);
+        // There should only be one. Not less, not more. If there's not, there's a problem.
+        $this->gradeitem = array_shift($gradeitems);
+        $this->scale = helper::get_scale($this->gradeitem->scaleid);
 
-        $this->define_baseurl(new moodle_url('/report/grade/srsstatus.php',
-            ['id' => $data->courseid,
-            'aid' => $data->assignment->id]));
-        $select = "g.id, g.student, g.grader, g.assign, g.sitting,
-            g.course, g.course_module, ag.grade solentgrade, g.converted_grade, g.response, g.parent_request_id,
-            g.request_id, g.payload_error, g.processed, g.timecreated, g.timemodified,
-            u.firstname, u.lastname, u.alternatename, u.lastnamephonetic, u.firstnamephonetic, u.middlename
+        if ($data->source == 'quercus') {
+            $select = "g.id, g.student studentid, g.grader graderid,
+                ag.grade solentgrade, g.converted_grade, g.processed status,
+                g.payload_error error_report, g.timecreated, g.timemodified,
+                u.firstname, u.lastname, u.alternatename, u.lastnamephonetic, u.firstnamephonetic, u.middlename
+                ";
+            $from = "{local_quercus_grades} g
+                JOIN {user} u ON u.id = g.student
+                LEFT JOIN {assign_grades} ag ON ag.assignment = g.assign AND ag.userid = g.student
             ";
-        $from = "{local_quercus_grades} g
-            JOIN {user} u ON u.id = g.student
-            LEFT JOIN {assign_grades} ag ON ag.assignment = g.assign AND ag.userid = g.student
-        ";
-        $this->set_sql($select, $from, 'course = :courseid AND assign = :assign',
-        ['courseid' => $data->courseid, 'assign' => $data->assignment->id]);
+            $this->set_sql($select, $from, 'g.course = :courseid AND g.assign = :assignid',
+                ['courseid' => $courseid, 'assignid' => $assignid]);
+        } else {
+            // This is SITS.
+            $select = "g.id, g.studentid, g.graderid,
+                ag.grade solentgrade, g.converted_grade, g.response status,
+                g.message error_report, g.timecreated, g.timemodified,
+                u.firstname, u.lastname, u.alternatename, u.lastnamephonetic, u.firstnamephonetic, u.middlename
+                ";
+            $from = "{local_solsits_assign} a
+                JOIN {local_solsits_assign_grades} g ON g.solassignmentid = a.id
+                JOIN {course_modules} cm ON cm.id = a.cmid
+                JOIN {user} u ON u.id = g.studentid
+                LEFT JOIN {assign_grades} ag ON ag.assignment = cm.instance AND ag.userid = g.studentid
+            ";
+            $this->set_sql($select, $from, 'a.cmid = :cmid',
+                ['cmid' => $cmid]);
+        }
     }
 
     /**
@@ -123,8 +150,8 @@ class srsstatus extends table_sql {
      * @param stdClass $row
      * @return string
      */
-    protected function col_grader($row) {
-        $grader = \core_user::get_user($row->grader);
+    protected function col_graderid($row) {
+        $grader = \core_user::get_user($row->graderid);
         return fullname($grader);
     }
 
@@ -144,8 +171,8 @@ class srsstatus extends table_sql {
      * @param stdClass $row
      * @return string
      */
-    protected function col_timemodifed($row) {
-        if ($row->timemodifed > 0) {
+    protected function col_timemodified($row) {
+        if ($row->timemodified > 0) {
             return userdate($row->timemodified);
         }
         return '';
@@ -166,10 +193,11 @@ class srsstatus extends table_sql {
         if ($gradeint == -1) {
             return 'Unmarked';
         }
-        if (isset($this->scale->items[$gradeint])) {
-            return $this->scale->items[$gradeint];
+        if (isset($this->scale->items[$gradeint - 1])) {
+            return $this->scale->items[$gradeint - 1];
         }
-        return get_string('scaleitemnotfound', 'report_grade');
+        $scale = print_r($this->scale->items, true);
+        return get_string('scaleitemnotfound', 'report_grade') . ' ' . $gradeint . $scale;
     }
 
     /**
@@ -186,7 +214,7 @@ class srsstatus extends table_sql {
 
         $this->print_initials_bar();
 
-        echo $OUTPUT->heading(get_string('nothingtodisplay'));
+        echo $OUTPUT->heading(get_string('nogradestodisplay', 'report_grade'));
 
         // Render the dynamic table footer.
         echo $this->get_dynamic_table_html_end();

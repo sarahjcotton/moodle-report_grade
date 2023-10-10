@@ -28,3 +28,8 @@ $plugin->version   = 2021021504;
 $plugin->release = 'v3.9-r3';
 $plugin->requires  = 2020061500;
 $plugin->component = 'report_grade';
+$plugin->dependencies = [
+    'theme_solent' => 2023021403,
+    'local_solsits' => 2023040515,
+    'local_quercus_tasks' => 2021020405,
+];
