@@ -31,10 +31,10 @@
         "externaldate": "2024-06-01"
     }
 }}
+{{#title}}
+<h3>{{{.}}}</h3>
+{{/title}}
 <ul>
-    {{#title}}
-    <span class="h3">{{{.}}}</span>
-    {{/title}}
     {{#sitting}}
     <li>{{#str}} sitting, report_grade, {{.}}{{/str}}</li>
     {{/sitting}}
