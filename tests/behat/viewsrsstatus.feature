@@ -467,17 +467,17 @@ Feature: See the status of grades uploaded to Student Records
     And I should see "Marks upload status for assignment \"Report 2 (25%)\""
     # Use this in place of running the export grades task as there's no connection.
     And the following Quercus grades are stored for "2022_Report1":
-    | user       | response | processed |
-    | student1   | SUCCESS  |           |
-    | student2   | SUCCESS  |           |
-    | student3   | SUCCESS  |           |
-    | student4   | SUCCESS  |           |
-    | student5   | SUCCESS  |           |
-    | student6   | SUCCESS  |           |
-    | student7   | SUCCESS  |           |
-    | student8   | SUCCESS  |           |
-    | student9   | SUCCESS  |           |
-    | student0   | SUCCESS  |           |
+    | user       | processed | payload_error |
+    | student1   | SUCCESS   |               |
+    | student2   | SUCCESS   |               |
+    | student3   | SUCCESS   |               |
+    | student4   | SUCCESS   |               |
+    | student5   | SUCCESS   |               |
+    | student6   | SUCCESS   |               |
+    | student7   | SUCCESS   |               |
+    | student8   | SUCCESS   |               |
+    | student9   | SUCCESS   |               |
+    | student0   | SUCCESS   |               |
     And I am on the "ABC101_123456789" "report_grade > Grade report" page logged in as moduleleader1
     When I follow "Marks upload status"
     And the following should exist in the "report_grade-srs_status" table:
