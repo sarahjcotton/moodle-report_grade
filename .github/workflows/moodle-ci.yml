@@ -63,6 +63,7 @@ jobs:
       - name: Install moodle-plugin-ci
         run: |
           moodle-plugin-ci add-plugin --branch main ltu-solent/moodle-local_solsits
+          moodle-plugin-ci add-plugin --branch main ltu-solent/moodle-local_solent
           moodle-plugin-ci add-plugin --branch master ltu-solent/moodle-local_quercus_tasks
           moodle-plugin-ci add-plugin --branch main ltu-solent/moodle-assign_feedback_misconduct
           moodle-plugin-ci add-plugin --branch main ltu-solent/moodle-assign_feedback_doublemark
