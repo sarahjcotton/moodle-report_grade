@@ -67,7 +67,7 @@ class grade_report_viewed extends \core\event\base {
      * @return array
      */
     protected function get_legacy_logdata() {
-        return array($this->courseid, 'course', 'report grade', "report/grade/index.php?id=$this->courseid", $this->courseid);
+        return [$this->courseid, 'course', 'report grade', "report/grade/index.php?id=$this->courseid", $this->courseid];
     }
 
     /**
@@ -76,7 +76,7 @@ class grade_report_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/grade/index.php', array('id' => $this->courseid));
+        return new \moodle_url('/report/grade/index.php', ['id' => $this->courseid]);
     }
 
 }

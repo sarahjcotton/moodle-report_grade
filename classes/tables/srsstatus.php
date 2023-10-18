@@ -78,7 +78,7 @@ class srsstatus extends table_sql {
             'status',
             'error_report',
             'timecreated',
-            'timemodified'
+            'timemodified',
         ];
 
         $columnheadings = [
@@ -90,7 +90,7 @@ class srsstatus extends table_sql {
             new lang_string('status', 'report_grade'),
             new lang_string('errorreport', 'report_grade'),
             new lang_string('timequeued', 'report_grade'),
-            new lang_string('timeprocessed', 'report_grade')
+            new lang_string('timeprocessed', 'report_grade'),
         ];
         $this->define_columns($columns);
         $this->define_headers($columnheadings);
@@ -196,8 +196,7 @@ class srsstatus extends table_sql {
         if (isset($this->scale->items[$gradeint - 1])) {
             return $this->scale->items[$gradeint - 1];
         }
-        $scale = print_r($this->scale->items, true);
-        return get_string('scaleitemnotfound', 'report_grade') . ' ' . $gradeint . $scale;
+        return get_string('scaleitemnotfound', 'report_grade');
     }
 
     /**

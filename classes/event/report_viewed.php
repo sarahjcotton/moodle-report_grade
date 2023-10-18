@@ -75,7 +75,7 @@ class report_viewed extends \core\event\base {
      */
     protected function get_legacy_logdata() {
         $url = "report/grade/user.php?id=". $this->userid . "&course=" . $this->courseid . "&mode=" . $this->other['mode'];
-        return array($this->courseid, 'course', 'report grade', $url, $this->courseid);
+        return [$this->courseid, 'course', 'report grade', $url, $this->courseid];
     }
 
     /**
@@ -84,8 +84,11 @@ class report_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/grade/user.php', array('course' => $this->courseid, 'id' => $this->relateduserid,
-                'mode' => $this->other['mode']));
+        return new \moodle_url('/report/grade/user.php', [
+            'course' => $this->courseid,
+            'id' => $this->relateduserid,
+            'mode' => $this->other['mode'],
+        ]);
     }
 
     /**

@@ -39,7 +39,7 @@ class helper {
     public static function get_gradeitems($courseid, $assignid = 0) {
         global $DB;
         $params = [
-            'courseid' => $courseid
+            'courseid' => $courseid,
         ];
         if ($assignid > 0) {
             $assignsql = ' AND gi.iteminstance = :assignid ';

@@ -492,5 +492,3 @@ Feature: See the status of grades uploaded to Student Records
     | Student 8              | A2           | 92              | SUCCESS |              |
     | Student 9              | B3           | 62              | SUCCESS |              |
     | Student 0              | Unmarked     | 0               | SUCCESS |              |
-
-

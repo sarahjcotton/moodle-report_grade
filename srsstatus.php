@@ -50,7 +50,7 @@ $sassignments = sitsassign::get_records_select('courseid = :courseid', ['coursei
 $totalassignments = count($qassignments) + count($sassignments);
 
 $pageparams = [
-    'cid' => $courseid
+    'cid' => $courseid,
 ];
 
 if ($qid > 0) {
@@ -63,7 +63,8 @@ if ($qid > 0) {
     $data->source = 'quercus';
     $title = new lang_string('srstitlecourseassignment', 'report_grade', [
         'shortname' => $course->shortname,
-        'assignname' => $data->assignment->name]);
+        'assignname' => $data->assignment->name,
+    ]);
 }
 if ($sid > 0) {
     $pageparams['sid'] = $sid;
@@ -75,7 +76,8 @@ if ($sid > 0) {
     $data->source = ['sits'];
     $title = new lang_string('srstitlecourseassignment', 'report_grade', [
         'shortname' => $course->shortname,
-        'assignname' => $data->assignment->get('title')]);
+        'assignname' => $data->assignment->get('title'),
+    ]);
 }
 
 // If no assignment has been specified, find the first available one to display.
@@ -86,14 +88,16 @@ if ($totalassignments > 0 && !isset($data->assignment)) {
         $pageparams['qid'] = $data->assignment->id;
         $title = new lang_string('srstitlecourseassignment', 'report_grade', [
             'shortname' => $course->shortname,
-            'assignname' => $data->assignment->name]);
+            'assignname' => $data->assignment->name,
+        ]);
     } else {
         $data->assignment = reset($sassignments);
         $data->source = 'sits';
         $pageparams['sid'] = $data->assignment->get('id');
         $title = new lang_string('srstitlecourseassignment', 'report_grade', [
             'shortname' => $course->shortname,
-            'assignname' => $data->assignment->get('title')]);
+            'assignname' => $data->assignment->get('title'),
+        ]);
     }
 }
 
@@ -121,14 +125,14 @@ if ($totalassignments > 1) {
         $linklist[] = html_writer::link(
             new moodle_url('/report/grade/srsstatus.php', [
                 'cid' => $data->courseid,
-                'qid' => $assign->id
+                'qid' => $assign->id,
             ]), $assign->name);
     }
     foreach ($sassignments as $assign) {
         $linklist[] = html_writer::link(
             new moodle_url('/report/grade/srsstatus.php', [
                 'cid' => $data->courseid,
-                'sid' => $assign->get('id')
+                'sid' => $assign->get('id'),
             ]), $assign->get('title'));
     }
     echo html_writer::alist($linklist, ['class' => 'marksupload-assignment-list']);

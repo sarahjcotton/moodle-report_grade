@@ -132,11 +132,11 @@ function report_grade_get_doublemarks($doublemarks, $iteminstance, $userid) {
     $return = [];
     foreach ($doublemarks as $doublemark) {
         if ($doublemark->userid == $userid && $iteminstance == $doublemark->assignment) {
-            $return = array(
+            $return = [
                 "scale" => ltrim($doublemark->scale, '-'),
                 "first" => $doublemark->first_grade,
-                "second" => $doublemark->second_grade
-            );
+                "second" => $doublemark->second_grade,
+            ];
         }
     }
     return $return;
@@ -178,7 +178,7 @@ function report_grade_get_external_examiner() {
             INNER JOIN {role} r ON r.id = ra.roleid
             WHERE r.shortname = ?
             AND c.id = ?",
-            array(get_config('report_grade', 'externalexaminershortname'), $COURSE->id));
+            [get_config('report_grade', 'externalexaminershortname'), $COURSE->id]);
     return $externalexaminer;
 }
 
@@ -198,7 +198,7 @@ function report_grade_get_moderators() {
             INNER JOIN {role} r ON r.id = ra.roleid
             WHERE r.shortname = ?
             AND c.id = ?",
-            array(get_config('report_grade', 'moderatorshortname'), $COURSE->id));
+            [get_config('report_grade', 'moderatorshortname'), $COURSE->id]);
     return $externalexaminer;
 }
 
@@ -211,7 +211,7 @@ function report_grade_get_ee_form_url() {
     global $DB, $COURSE;
     $dbman = $DB->get_manager();
     if ($dbman->table_exists('report_ee')) {
-        $url = new moodle_url('/report/ee/index.php', array('id' => $COURSE->id));
+        $url = new moodle_url('/report/ee/index.php', ['id' => $COURSE->id]);
         $url = html_writer::link($url, get_string('reporturl', 'report_grade'), ['class' => 'btn btn-primary']);
 
         return $url;

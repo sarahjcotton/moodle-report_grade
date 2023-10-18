@@ -10,8 +10,8 @@
     font-size: 0.8em;
 }
 
-#page-report-grade-index th{
-	text-align: left;
+#page-report-grade-index th {
+    text-align: left;
 }
 
 #page-report-grade-user .section .content {
@@ -34,27 +34,33 @@
     border-style: solid;
     padding: 10px;
 }
+
 @media print {
-  #page-report-grade-index header, #page-report-grade-index footer, #page-report-grade-index #block-region-side-pre {
-    display: none;
-  }
-  #page-report-grade-index #region-main{
-    width:100%;
-  }
+    #page-report-grade-index header,
+    #page-report-grade-index footer,
+    #page-report-grade-index #block-region-side-pre {
+        display: none;
+    }
+    #page-report-grade-index #region-main {
+        width: 100%;
+    }
 
-  #page-report-grade-index{
-    font-size: 0.7em;
-  }
+    #page-report-grade-index {
+        font-size: 0.7em;
+    }
 
-  #page-report-grade-index h2{
-    font-size: 1.8em;
-  }
+    #page-report-grade-index h2 {
+        font-size: 1.8em;
+    }
 
-  #page-report-grade-index #print_button{
-    display: none;
-  }
+    #page-report-grade-index #print_button {
+        display: none;
+    }
 
-  #page-report-grade-index table.flexible th,#page-report-grade-index .generaltable th, #page-report-grade-index table.flexible td, #page-report-grade-index .generaltable td{
-    padding: 0;
-  }
+    #page-report-grade-index table.flexible th,
+    #page-report-grade-index .generaltable th,
+    #page-report-grade-index table.flexible td,
+    #page-report-grade-index .generaltable td {
+        padding: 0;
+    }
 }

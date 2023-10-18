@@ -29,7 +29,7 @@ $id = optional_param('id', '', PARAM_INT);
 $courseid = optional_param('course', '', PARAM_INT);
 $course = ($id ? $id : $courseid);
 
-$PAGE->set_url('/report/grade/index.php', array('id' => $course));
+$PAGE->set_url('/report/grade/index.php', ['id' => $course]);
 $PAGE->set_pagelayout('report');
 
 require_login($course);
@@ -43,7 +43,7 @@ $PAGE->set_heading(get_string('pluginname' , 'report_grade'));
 echo $OUTPUT->header();
 
 // Trigger an grade report viewed event.
-$event = \report_grade\event\grade_report_viewed::create(array('context' => $context));
+$event = \report_grade\event\grade_report_viewed::create(['context' => $context]);
 $event->trigger();
 
 $strgradereport  = get_string('pluginname', 'report_grade');
@@ -82,7 +82,7 @@ $table = new html_table();
 $table->attributes['class'] = 'generaltable boxaligncenter';
 $table->cellpadding = 5;
 $table->id = 'gradetable';
-$table->head = array($strfirst, $strlast, $strid);
+$table->head = [$strfirst, $strlast, $strid];
 
 require_once($CFG->dirroot.'/grade/export/lib.php');
 global $DB;
@@ -122,16 +122,18 @@ $confdouble = [];
 $confsample = [];
 foreach ($assigns as $k => $v) {
     // Set up assignment column headers.
-    $confdouble[$k] = $DB->get_record('assign_plugin_config', array(
+    $confdouble[$k] = $DB->get_record('assign_plugin_config', [
         'assignment' => $v->iteminstance,
         'plugin' => 'doublemark',
         'subtype' => 'assignfeedback',
-        'name' => 'enabled'));
-    $confsample[$k] = $DB->get_record('assign_plugin_config', array(
+        'name' => 'enabled',
+    ]);
+    $confsample[$k] = $DB->get_record('assign_plugin_config', [
         'assignment' => $v->iteminstance,
         'plugin' => 'sample',
         'subtype' => 'assignfeedback',
-        'name' => 'enabled'));
+        'name' => 'enabled',
+    ]);
 
     if ($confdouble[$k]->name == "enabled" && $confdouble[$k]->value == 1) {
         $table->head[] = ($v->itemname . get_string('firstmark', 'report_grade'));
@@ -152,7 +154,7 @@ foreach ($users as $ku => $vu) {
     $cell1 = new html_table_cell($vu->firstname);
     $cell2 = new html_table_cell($vu->lastname);
     $cell3 = new html_table_cell($vu->idnumber);
-    $row->cells = array($cell1, $cell2, $cell3);
+    $row->cells = [$cell1, $cell2, $cell3];
 
     foreach ($assigns as $k => $v) {
         foreach ($allgrades as $kg => $vg) {
