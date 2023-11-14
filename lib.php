@@ -35,7 +35,7 @@ function report_grade_extend_navigation_course($navigation, $course, $context) {
         $url = new moodle_url('/report/grade/index.php', ['id' => $course->id]);
         $navigation->add(get_string('pluginname', 'report_grade'),
             $url, navigation_node::TYPE_SETTING, null, null, new pix_icon('i/report', ''));
-        $url = new moodle_url('/report/grade/srsstatus.php', ['id' => $course->id]);
+        $url = new moodle_url('/report/grade/srsstatus.php', ['cid' => $course->id]);
         $navigation->add(get_string('srsurl', 'report_grade'), $url, navigation_node::TYPE_SETTING);
     }
 }
