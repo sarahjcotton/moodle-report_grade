@@ -46,7 +46,7 @@ $data->courseid = $courseid;
 // Get all Quercus and SITS assignments for this course.
 $qassignments = \local_quercus_tasks\api::get_quercus_assignments($data->courseid);
 // Using get_records_select to get id indexed array result. See MDL-79574.
-$sassignments = sitsassign::get_records_select('courseid = :courseid', ['courseid' => $data->courseid]);
+$sassignments = sitsassign::get_records_select('courseid = :courseid AND cmid > 0', ['courseid' => $data->courseid]);
 $totalassignments = count($qassignments) + count($sassignments);
 
 $pageparams = [
