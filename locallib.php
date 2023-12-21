@@ -36,14 +36,14 @@ require_once($CFG->dirroot . '/course/lib.php');
  * @return string
  */
 function report_grade_convert_grade_report($scaleid, $grade, $cmid) {
-    $issitsassign = \local_solsits\helper::is_sits_assignment($cmid);
-    $grademarkscale = $issitsassign ?
-        get_config('local_solsits', 'grademarkscale') :
-        get_config('local_quercus_tasks', 'grademarkscale');
-    $grademarkexemptscale = $issitsassign ?
-        get_config('local_solsits', 'grademarkexemptscale') :
-        get_config('local_quercus_tasks', 'grademarkexemptscale');
-    if ($scaleid == $grademarkscale) { // Solent gradescale.
+    //$issitsassign = \local_solsits\helper::is_sits_assignment($cmid);
+//    $grademarkscale = $issitsassign ?
+//        get_config('local_solsits', 'grademarkscale') :
+//        get_config('local_quercus_tasks', 'grademarkscale');
+//    $grademarkexemptscale = $issitsassign ?
+//        get_config('local_solsits', 'grademarkexemptscale') :
+//        get_config('local_quercus_tasks', 'grademarkexemptscale');
+    if ($scaleid == 1) { // Solent gradescale.
         $converted = -1;
         switch ($grade){
             case 18:

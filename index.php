@@ -75,7 +75,7 @@ $eeurl = report_grade_get_ee_form_url();
 $srsurl = html_writer::link(new moodle_url('/report/grade/srsstatus.php', ['cid' => $course]),
     get_string('srsurl', 'report_grade'),
     ['class' => 'btn btn-primary']);
-echo html_writer::tag('p', $eeurl . ' ' . $srsurl);
+echo html_writer::tag('p', $eeurl);
 
 // Set up static column headers.
 $table = new html_table();
@@ -91,7 +91,7 @@ $sql = "SELECT gi.iteminstance, gi.itemname, cm.id cmid
   FROM {grade_items} gi
   JOIN {course_modules} cm ON cm.instance = gi.iteminstance
   JOIN {modules} m ON m.id = cm.module AND m.name = 'assign'
-  WHERE gi.courseid = :courseid AND gi.itemmodule = 'assign' AND cm.idnumber != ''";
+  WHERE gi.courseid = :courseid AND gi.itemmodule = 'assign'";
 $assigns = $DB->get_records_sql($sql, ['courseid' => $course]);
 if (count($assigns) == 0) {
     echo "<br>";

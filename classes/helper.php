@@ -50,7 +50,7 @@ class helper {
         FROM {grade_items} gi
         JOIN {course_modules} cm ON cm.instance = gi.iteminstance
         JOIN {modules} m ON m.id = cm.module AND m.name = 'assign'
-        WHERE gi.courseid = :courseid $assignsql AND gi.itemmodule = 'assign' AND cm.idnumber != ''";
+        WHERE gi.courseid = :courseid $assignsql AND gi.itemmodule = 'assign'";
         return $DB->get_records_sql($sql, $params);
     }
 
